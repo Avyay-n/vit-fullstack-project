@@ -1,5 +1,4 @@
-    // api/bfhl.js
-module.exports = (req, res) => {
+export default (req, res) => {
   if (req.method !== "POST") {
     return res.status(405).json({ is_success: false, message: "Use POST" });
   }
@@ -22,25 +21,17 @@ module.exports = (req, res) => {
     let sum = 0;
 
     data.forEach(raw => {
-      const item = String(raw);
-
-      if (/^-?\d+$/.test(item)) {
-        const n = parseInt(item, 10);
-        sum += n;
-        if (n % 2 === 0) even_numbers.push(item);
-        else odd_numbers.push(item);
-      } else if (/^[a-zA-Z]+$/.test(item)) {
-        alphabets.push(item.toUpperCase());
+      if (!isNaN(raw)) {
+        const num = parseInt(raw);
+        if (num % 2 === 0) even_numbers.push(num);
+        else odd_numbers.push(num);
+        sum += num;
+      } else if (/^[a-zA-Z]$/.test(raw)) {
+        alphabets.push(raw);
       } else {
-        special_characters.push(item);
+        special_characters.push(raw);
       }
     });
-
-    const concatRaw = alphabets.join("").split("").reverse().join("");
-    const concat_string = concatRaw
-      .split("")
-      .map((ch, idx) => (idx % 2 === 0 ? ch.toUpperCase() : ch.toLowerCase()))
-      .join("");
 
     return res.status(200).json({
       is_success: true,
@@ -51,10 +42,10 @@ module.exports = (req, res) => {
       even_numbers,
       alphabets,
       special_characters,
-      sum: String(sum),
-      concat_string,
+      sum
     });
+
   } catch (err) {
-    return res.status(500).json({ is_success: false, message: err.message });
+    return res.status(500).json({ is_success: false, message: "Server error", error: err.message });
   }
 };

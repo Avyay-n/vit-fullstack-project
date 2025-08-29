@@ -5,5 +5,10 @@
   ],
   "routes": [
     { "src": "/bfhl", "dest": "/api/bfhl.js" }
+  ],
+  "rewrites": [
+    { "source": "/bfhl", "destination": "/api/bfhl.js" }
   ]
+
+
 }
